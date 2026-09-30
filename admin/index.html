@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="noindex">
+	<title>Turbo test CMS</title>
+</head>
+<body>
+	<!-- turbo needs decap's beta build -->
+	<script src="https://cdn.jsdelivr.net/npm/decap-cms@beta/dist/decap-cms.js"></script>
+	<script>
+		// a custom button in the rich text editor, like the figure button on the real site. it takes an
+		// upload, so it also tests media going through turbo, and writes a shortcode on a line of its own
+		CMS.registerEditorComponent({
+			id: 'figure',
+			label: 'Figure',
+			fields: [
+				{name: 'src', label: 'Image', widget: 'image'},
+				{name: 'caption', label: 'Caption', widget: 'string', required: false}
+			],
+			pattern: /^\{\{\s*figure:\s*(.+?)\s*(?:\|\s*(.*?))?\s*\}\}$/,
+			fromBlock: (match) => ({src: match[1], caption: match[2] || ''}),
+			toBlock: (data) => `{{figure: ${data.src || ''}${data.caption ? ` | ${data.caption}` : ''}}}`,
+			toPreview: (data) => `<figure><img src="${data.src || ''}" alt="" width="300"><figcaption>${data.caption || ''}</figcaption></figure>`
+		});
+
+		// a custom preview for entries, to check that preview templates still run on turbo
+		CMS.registerPreviewTemplate('entries', ({entry, widgetFor}) => h('div', {},
+			h('p', {}, h('small', {}, 'custom preview')),
+			h('h3', {}, entry.getIn(['data', 'Title'])),
+			h('p', {}, entry.getIn(['data', 'Date'])),
+			widgetFor('Body')
+		));
+	</script>
+</body>
+</html>
