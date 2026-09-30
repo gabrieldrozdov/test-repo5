@@ -5,7 +5,7 @@ const path = require('path');
 
 const ROOT = __dirname;
 const OUT = path.join(ROOT, 'public');
-
+ 
 function readJson(file) {
 	return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
