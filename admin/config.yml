@@ -1,7 +1,7 @@
 # decap cms, on decap turbo. saves are commits to the repo, the build reads them from content
 
 backend:
-  name: test-repo5
+  name: turbo-github # the kind of backend, always this for turbo. the site itself is picked by the id below
   turbo_site_id: a936ba87-35da-4627-a2a1-48b405e634d0 # the id on the site's overview tab in turbo
   branch: main
 
