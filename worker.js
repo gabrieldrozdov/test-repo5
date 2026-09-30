@@ -30,6 +30,8 @@ export default {
 		// loses a signup that has already been saved
 		if (env.RESEND_API_KEY && env.NOTIFY_TO) {
 			ctx.waitUntil(notify(env, email, created));
+		} else {
+			console.log('notification skipped:', env.RESEND_API_KEY ? 'no NOTIFY_TO' : 'no RESEND_API_KEY secret on this worker');
 		}
 
 		return page('Thanks for signing up!');
@@ -54,6 +56,8 @@ async function notify(env, email, created) {
 	});
 	if (!response.ok) {
 		console.log('notification failed', response.status, await response.text());
+	} else {
+		console.log('notification sent to', env.NOTIFY_TO);
 	}
 }
 
