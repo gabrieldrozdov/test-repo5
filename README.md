@@ -27,3 +27,20 @@ A throwaway site for trying Decap Turbo with drafts, before moving Archivo Latin
 6. Publish the drafts from the Workflow tab, wait for the Cloudflare build, and check the site
    (the time at the bottom says when it was last built).
 7. Edit the About page, save, publish, check again.
+
+## The signup form
+
+The form on the home page posts to `/signup`, which is the only address `worker.js` answers. It
+saves each address in a Cloudflare D1 database, and can email you about each one.
+
+1. In Cloudflare: Storage & Databases > D1 > Create, named `test-repo5-signups`. Copy its id into
+   `database_id` in `wrangler.jsonc`, then push. The table makes itself on the first signup.
+2. Sign up on the site, then in the database's Console run
+   `SELECT * FROM signups ORDER BY created DESC;` to see it.
+
+Email notifications need a domain on Cloudflare (a workers.dev address can't send):
+
+1. Add the domain to Cloudflare, then turn on Email > Email Routing for it.
+2. In Email Routing > Destination addresses, add and verify the address to be notified.
+3. Uncomment the `send_email` and `vars` lines in `wrangler.jsonc` and fill in the two addresses
+   (the `from` has to be on the domain), then push.

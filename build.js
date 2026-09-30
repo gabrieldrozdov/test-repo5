@@ -69,6 +69,15 @@ function pageHtml(about, entries) {
 <h2>${escapeHtml(about.Title)}</h2>
 ${paragraphs(about.Body)}
 
+<h2>Sign up</h2>
+<!-- a plain form: it posts to worker.js, which saves the address and answers with a page of its own.
+the hidden field is a trap only bots fill in -->
+<form method="POST" action="/signup">
+<p hidden><label>Leave this empty: <input name="company" tabindex="-1" autocomplete="off"></label></p>
+<label>Email <input type="email" name="email" required autocomplete="email"></label>
+<button type="submit">Sign up</button>
+</form>
+
 <h2>Entries</h2>
 ${entries.map(entryHtml).join('\n\n')}
 
