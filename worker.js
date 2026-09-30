@@ -1,6 +1,6 @@
 // every page and upload is a file in public and never reaches this. the one thing that does is the
-// signup form, which posts to /signup. the address is saved in the signups database, and if an
-// email binding has been set up, a notification is sent to you as well
+// signup form, which posts to /signup. the address is saved in the signups database, and if a
+// resend key has been set up, a notification is emailed to you as well
 const TABLE = 'CREATE TABLE IF NOT EXISTS signups (email TEXT, created TEXT)';
 
 export default {
@@ -28,17 +28,34 @@ export default {
 
 		// the email goes out after the reply, so the visitor never waits on it, and a failed email never
 		// loses a signup that has already been saved
-		if (env.NOTIFY && env.NOTIFY_FROM) {
-			ctx.waitUntil(env.NOTIFY.send({
-				from: env.NOTIFY_FROM,
-				subject: `New signup: ${email}`,
-				text: `${email} signed up on ${created}.`
-			}).catch(error => console.log('notification failed', error)));
+		if (env.RESEND_API_KEY && env.NOTIFY_TO) {
+			ctx.waitUntil(notify(env, email, created));
 		}
 
 		return page('Thanks for signing up!');
 	}
 };
+
+// resend's shared address can send without a domain of your own, but only to the email address
+// the resend account was made with, which is all a notification to yourself needs
+async function notify(env, email, created) {
+	let response = await fetch('https://api.resend.com/emails', {
+		method: 'POST',
+		headers: {
+			'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			from: env.NOTIFY_FROM || 'Signups <onboarding@resend.dev>',
+			to: [env.NOTIFY_TO],
+			subject: `New signup: ${email}`,
+			text: `${email} signed up on ${created}.`
+		})
+	});
+	if (!response.ok) {
+		console.log('notification failed', response.status, await response.text());
+	}
+}
 
 // a bare page to land on after sending the form, with a way back
 function page(message, status = 200) {

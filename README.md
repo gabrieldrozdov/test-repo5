@@ -38,9 +38,13 @@ saves each address in a Cloudflare D1 database, and can email you about each one
 2. Sign up on the site, then in the database's Console run
    `SELECT * FROM signups ORDER BY created DESC;` to see it.
 
-Email notifications need a domain on Cloudflare (a workers.dev address can't send):
+Email notifications go through Resend, which the worker calls after saving the signup, so the
+page never changes. Its shared sender needs no domain of your own, but can only email the address
+the Resend account was made with.
 
-1. Add the domain to Cloudflare, then turn on Email > Email Routing for it.
-2. In Email Routing > Destination addresses, add and verify the address to be notified.
-3. Uncomment the `send_email` and `vars` lines in `wrangler.jsonc` and fill in the two addresses
-   (the `from` has to be on the domain), then push.
+1. Make a free account at resend.com with the email you want notified, and create an API key.
+2. In Cloudflare, on the worker: Settings > Variables and Secrets > Add, type Secret, named
+   `RESEND_API_KEY`, with the key as its value.
+3. Make sure `NOTIFY_TO` in `wrangler.jsonc` is that same email, then push.
+
+If an email doesn't arrive, the reason is in the worker's Observability > Logs.

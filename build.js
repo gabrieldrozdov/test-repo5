@@ -72,11 +72,31 @@ ${paragraphs(about.Body)}
 <h2>Sign up</h2>
 <!-- a plain form: it posts to worker.js, which saves the address and answers with a page of its own.
 the hidden field is a trap only bots fill in -->
-<form method="POST" action="/signup">
+<form method="POST" action="/signup" id="signup">
 <p hidden><label>Leave this empty: <input name="company" tabindex="-1" autocomplete="off"></label></p>
 <label>Email <input type="email" name="email" required autocomplete="email"></label>
 <button type="submit">Sign up</button>
+<p id="signup-status" aria-live="polite"></p>
 </form>
+<script>
+// the form is sent in the background and answered in place, so nobody leaves the page. without
+// this script the form still works, and lands on the worker's thanks page instead
+const SIGNUP = document.getElementById('signup');
+const STATUS = document.getElementById('signup-status');
+SIGNUP.addEventListener('submit', (event) => {
+	event.preventDefault();
+	STATUS.textContent = 'Sending…';
+	fetch(SIGNUP.action, {method: 'POST', body: new FormData(SIGNUP)}).then((response) => {
+		if (!response.ok) {
+			throw new Error(response.status);
+		}
+		SIGNUP.reset();
+		STATUS.textContent = 'Thanks for signing up!';
+	}).catch(() => {
+		STATUS.textContent = 'Something went wrong. Try again!';
+	});
+});
+</script>
 
 <h2>Entries</h2>
 ${entries.map(entryHtml).join('\n\n')}
