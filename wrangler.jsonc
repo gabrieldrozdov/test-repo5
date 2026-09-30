@@ -9,13 +9,13 @@
 	// where signups are kept. make the database in the dashboard first, then paste its id here
 	"d1_databases": [
 		{"binding": "SIGNUPS", "database_name": "test-repo5-signups", "database_id": "e20dfc37-2d7b-47ec-9efc-9bb81be2c913"}
-	]
+	],
 
 	// email notifications, once a domain is on cloudflare with email routing turned on. uncomment
 	// this, put a comma after the ] above, and use your own addresses. the to address has to be
 	// verified in email routing, and the from address has to be on the domain
-	// "send_email": [
-	// 	{"name": "NOTIFY", "destination_address": "you@example.com"}
-	// ],
-	// "vars": {"NOTIFY_FROM": "signups@yourdomain.com"}
+	"send_email": [
+		{"name": "NOTIFY", "destination_address": "gabrieldrozdov@gmail.com"}
+	],
+	"vars": {"NOTIFY_FROM": "testaddress@gmail.com"}
 }
