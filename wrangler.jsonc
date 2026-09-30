@@ -17,5 +17,5 @@
 	"send_email": [
 		{"name": "NOTIFY", "destination_address": "gabrieldrozdov@gmail.com"}
 	],
-	"vars": {"NOTIFY_FROM": "testaddress@gmail.com"}
+	"vars": {"NOTIFY_FROM": "gabrieldrozdov@gmail.com"}
 }
