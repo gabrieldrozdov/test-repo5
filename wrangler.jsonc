@@ -1,6 +1,6 @@
 {
 	// cloudflare runs npm run build, then publishes whatever the build left in public
-	"name": "turbo-test",
+	"name": "test-repo5",
 	"compatibility_date": "2026-09-01",
 	"assets": {"directory": "public"}
 }
